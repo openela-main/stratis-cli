@@ -1,17 +1,24 @@
 Name:           stratis-cli
-Version:        3.4.1
+Version:        3.5.3
 Release:        1%{?dist}
 Summary:        Command-line tool for interacting with the Stratis daemon
 
-License:        ASL 2.0
+License:        Apache-2.0
 URL:            https://github.com/stratis-storage/stratis-cli
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+BuildRequires:  python3-dateutil
+BuildRequires:  python3-dbus-client-gen
+BuildRequires:  python3-dbus-python-client-gen
+BuildRequires:  python3-justbytes
+BuildRequires:  python3-packaging
+BuildRequires:  python3-psutil
+BuildRequires:  python3-wcwidth
 BuildRequires:  %{_bindir}/a2x
 # It runs without, but totally useless
-Requires:       (stratisd >= 3.4.0 with stratisd < 4.0.0)
+Requires:       (stratisd >= 3.5.0 with stratisd < 4.0.0)
 
 # stratisd only available on certain arches
 ExclusiveArch:  %{rust_arches} noarch
@@ -65,6 +72,14 @@ a2x -f manpage docs/stratis.txt
 %{python3_sitelib}/stratis_cli-*.egg-info/
 
 %changelog
+* Thu Jun 08 2023 Bryan Gurney <bgurney@redhat.com> - 3.5.3-1
+- Allow for inconsistent value in StoppedPools D-Bus property
+- Resolves: rhbz#2213325
+
+* Tue May 16 2023 Bryan Gurney <bgurney@redhat.com> - 3.5.2-1
+- Update to version 3.5.2
+- Resolves: rhbz#2167462
+
 * Mon Jan 09 2023 Bryan Gurney <bgurney@redhat.com> - 3.4.1-1
 - send_uevent: remove strict parameter
 - Resolves: rhbz#2158914
