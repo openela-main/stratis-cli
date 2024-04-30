@@ -1,5 +1,5 @@
 Name:           stratis-cli
-Version:        3.5.3
+Version:        3.6.0
 Release:        1%{?dist}
 Summary:        Command-line tool for interacting with the Stratis daemon
 
@@ -9,6 +9,8 @@ Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+BuildRequires:  %{_bindir}/a2x
+%if 0%{?rhel}
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-dbus-client-gen
 BuildRequires:  python3-dbus-python-client-gen
@@ -16,13 +18,14 @@ BuildRequires:  python3-justbytes
 BuildRequires:  python3-packaging
 BuildRequires:  python3-psutil
 BuildRequires:  python3-wcwidth
-BuildRequires:  %{_bindir}/a2x
-# It runs without, but totally useless
-Requires:       (stratisd >= 3.5.0 with stratisd < 4.0.0)
+%endif
 
-# stratisd only available on certain arches
+# Require the version of stratisd that supports a compatible D-Bus interface
+Requires:       (stratisd >= 3.6.0 with stratisd < 4.0.0)
+
+# Exclude the same arches for stratis-cli as are excluded for stratisd
 ExclusiveArch:  %{rust_arches} noarch
-%if 0%{?rhel} && !0%{?eln}
+%if 0%{?rhel}
 ExcludeArch:    i686
 %endif
 BuildArch:      noarch
@@ -72,6 +75,10 @@ a2x -f manpage docs/stratis.txt
 %{python3_sitelib}/stratis_cli-*.egg-info/
 
 %changelog
+* Mon Nov 06 2023 Bryan Gurney <bgurney@redhat.com> - 3.6.0-1
+- Update to version 3.6.0
+- Resolves: RHEL-2265
+
 * Thu Jun 08 2023 Bryan Gurney <bgurney@redhat.com> - 3.5.3-1
 - Allow for inconsistent value in StoppedPools D-Bus property
 - Resolves: rhbz#2213325
