@@ -1,6 +1,6 @@
 Name:           stratis-cli
-Version:        3.8.3
-Release:        2%{?dist}
+Version:        3.9.0
+Release:        1%{?dist}
 Summary:        Command-line tool for interacting with the Stratis daemon
 
 License:        Apache-2.0
@@ -9,18 +9,9 @@ Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  python3-devel
 BuildRequires:  %{_bindir}/a2x
-%if 0%{?rhel}
-BuildRequires:  python3-dateutil
-BuildRequires:  python3-dbus-client-gen
-BuildRequires:  python3-dbus-python-client-gen
-BuildRequires:  python3-justbytes
-BuildRequires:  python3-packaging
-BuildRequires:  python3-psutil
-BuildRequires:  python3-wcwidth
-%endif
 
 # Require the version of stratisd that supports a compatible D-Bus interface
-Requires:       (stratisd >= 3.8.2 with stratisd < 4.0.0)
+Requires:       (stratisd >= 3.9.0 with stratisd < 4.0.0)
 
 # Exclude the same arches for stratis-cli as are excluded for stratisd
 ExclusiveArch:  %{rust_arches} noarch
@@ -47,15 +38,6 @@ a2x -f manpage docs/stratis.txt
 %install
 %pyproject_install
 %pyproject_save_files -l stratis_cli
-# Do not install tab-completion files for RHEL
-%if !0%{?rhel}
-%{__install} -Dpm0644 -t %{buildroot}%{_datadir}/bash-completion/completions \
-  shell-completion/bash/stratis
-%{__install} -Dpm0644 -t %{buildroot}%{_datadir}/zsh/site-functions \
-  shell-completion/zsh/_stratis
-%{__install} -Dpm0644 -t %{buildroot}%{_datadir}/fish/vendor_completions.d \
-  shell-completion/fish/stratis.fish
-%endif
 %{__install} -Dpm0644 -t %{buildroot}%{_mandir}/man8 docs/stratis.8
 
 %check
@@ -65,19 +47,12 @@ a2x -f manpage docs/stratis.txt
 %doc README.rst
 %{_bindir}/stratis
 %{_mandir}/man8/stratis.8*
-%if !0%{?rhel}
-%dir %{_datadir}/bash-completion
-%dir %{_datadir}/bash-completion/completions
-%{_datadir}/bash-completion/completions/stratis
-%dir %{_datadir}/zsh
-%dir %{_datadir}/zsh/site-functions
-%{_datadir}/zsh/site-functions/_stratis
-%dir %{_datadir}/fish
-%dir %{_datadir}/fish/vendor_completions.d
-%{_datadir}/fish/vendor_completions.d/stratis.fish
-%endif
 
 %changelog
+* Fri May 08 2026 Chung Chung <cchung@redhat.com> - 3.9.0-1
+- Update to 3.9.0
+- Resolves: RHEL-174627
+
 * Thu Nov 13 2025 Chung Chung <cchung@redhat.com> - 3.8.6-2
 - Update to 3.8.3
 - Resolves: RHEL-125936
